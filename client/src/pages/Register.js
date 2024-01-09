@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Typography, TextField, Button } from "@mui/material";
-import axios from "axios";
-import { useDispatch } from "react-redux";
-import { authActions } from "../redux/store";
 import toast from "react-hot-toast";
-const Login = () => {
+import axios from "axios";
+const Register = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   //state
   const [inputs, setInputs] = useState({
+    name: "",
     email: "",
     password: "",
   });
@@ -26,15 +24,14 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post("/api/v1/user/login", {
+      const { data } = await axios.post("/api/v1/user/register", {
+        username: inputs.name,
         email: inputs.email,
         password: inputs.password,
       });
       if (data.success) {
-        localStorage.setItem("userId", data?.user._id);
-        dispatch(authActions.login());
-        toast.success("User login Successfully");
-        navigate("/");
+        toast.success("User Register Successfully");
+        navigate("/login");
       }
     } catch (error) {
       console.log(error);
@@ -61,9 +58,17 @@ const Login = () => {
             padding={3}
             textAlign="center"
           >
-            Login
+            Register
           </Typography>
-
+          <TextField
+            placeholder="name"
+            value={inputs.name}
+            onChange={handleChange}
+            name="name"
+            margin="normal"
+            type={"text"}
+            required
+          />
           <TextField
             placeholder="email"
             value={inputs.email}
@@ -92,10 +97,10 @@ const Login = () => {
             Submit
           </Button>
           <Button
-            onClick={() => navigate("/register")}
+            onClick={() => navigate("/login")}
             sx={{ borderRadius: 3, marginTop: 3 }}
           >
-            Not a user ? Please Register
+            Already Registerd ? Please Login
           </Button>
         </Box>
       </form>
@@ -103,4 +108,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
